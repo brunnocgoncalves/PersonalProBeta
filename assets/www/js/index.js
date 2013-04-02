@@ -1,4 +1,5 @@
 	var idAluno;
+	var novoId;
 
 	// Wait for Cordova to load
     //
@@ -112,10 +113,13 @@
 						+ '</a>';
 	 
 			parent.appendChild(listItem);
+			novoId = results.rows.item(i).id;
 		}
 		
 		var list = document.getElementById('listview');
 		$(list).listview("refresh");
+		
+		novoId = novoId + 1;
     }
 	
 	function errorLA(err) {
@@ -152,6 +156,23 @@
     //
     function successCA() {
         alert('Aluno criado com sucesso!');
+		var parent = document.getElementById('listview');
+		var listItem = document.createElement('li');
+		listItem.setAttribute('id','listitem');
+		
+		listItem.innerHTML = '<a href="#" onclick="openAluno('+novoId+');");">'
+						+ '<h2>' + document.getElementById("name").value + '</h2>'
+						+ '<p><strong>Ficha iniciada em ' + document.getElementById("dataficha").value + ' e irá vencer após ' + document.getElementById("aulaficha").value + ' aulas.</strong></p>'
+						+ '<p>Pagamento a cada ' + document.getElementById("pagamento").value + ' ' + $('#tipo').val() + '.</p>'
+						+ '<p>Nasceu em ' + document.getElementById("datanascimento").value + '</p>'
+						+ '<p>E-mail: ' + document.getElementById("email").value + '</p>'
+						+ '<p class="ui-li-aside"><strong>R$' + document.getElementById("valor").value + '</strong></p>'
+					+ '</a>';
+ 
+		parent.appendChild(listItem);
+		
+		var list = document.getElementById('listview');
+		$(list).listview("refresh");
     }
 	
 	function save(){
