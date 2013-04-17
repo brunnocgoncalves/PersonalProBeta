@@ -8,8 +8,9 @@
     // Cordova is ready
     //
     function onDeviceReady() {
-        var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
+		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
         db.transaction(createDataBase, errorCD, successCD);
+		db.transaction(listaAlunos, error);
     }
 	
 	function listaAlunosAula(tx){
@@ -224,9 +225,10 @@
     }
 
 	$( "#page" ).on( "pagecreate", function( event, ui ) {
-		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
-        db.transaction(createDataBase, errorCD, successCD);
-		db.transaction(listaAlunos, error);
+		//var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
+        //db.transaction(createDataBase, errorCD, successCD);
+		onDeviceReady();
+		//db.transaction(listaAlunos, error);
 	} );
 	
 	function openAluno(id, nome){
