@@ -31,7 +31,7 @@
 			 <div data-role="panel" data-position-fixed="true" id="nav-panel">
 				<ul data-role="listview" data-theme="a" class="nav-search">
 					<li data-icon="delete"><a href="#" data-rel="close">Close menu</a></li>
-					<li><a href="#page">Alunos</a></li>
+					<li><a href="#">Alunos</a></li>
 					<li><a href="#aula">Registrar aula</a></li>
 					<li><a href="#pagamento">Registrar pagamento</a></li>
 					<li><a href="#" onClick="zeraBase();">Zerar base</a></li>
@@ -54,8 +54,8 @@
 					<input type="date" name="datanascimento" id="datanascimento" value="" data-clear-btn="true" autocomplete="off" data-mini="false">
 					<!--<label for="ficha">Ficha:</label>
 					<textarea data-mini="false" cols="40" rows="25" name="ficha" id="ficha"></textarea>-->
-					<label for="pagamento">Período pagamento:</label>
-					<input type="number" name="pagamento" id="pagamento" value="" data-clear-btn="true" autocomplete="off" data-mini="false">
+					<label for="formaPagamento">Período pagamento:</label>
+					<input type="number" name="formaPagamento" id="formaPagamento" value="" data-clear-btn="true" autocomplete="off" data-mini="false">
 					<label for="tipo">Tipo:</label>
 					<select name="tipo" id="tipo" data-mini="false">
 						<option value="mes(es)">Mês</option>
@@ -85,7 +85,7 @@
 				<ul data-role="listview" data-theme="a" class="nav-search">
 					<li data-icon="delete"><a href="#" data-rel="close">Close menu</a></li>
 					<li><a href="#page">Alunos</a></li>
-					<li><a href="#aula">Registrar aula</a></li>
+					<li><a href="#">Registrar aula</a></li>
 					<li><a href="#pagamento">Registrar pagamento</a></li>
 					<li><a href="#" onClick="zeraBase();">Zerar base</a></li>
 				</ul>
@@ -124,7 +124,7 @@
 			</div><!-- /panel -->
 
 			<div data-role="header" data-position="fixed">
-				<h1>Aluno</h1>
+				<h1 id="nomeAluno">Aluno</h1>
 				<a href="#nav-panel-aluno" data-icon="bars" data-iconpos="notext">Menu</a>
 			</div><!-- /header -->
 
@@ -132,6 +132,46 @@
 					<ul id="listviewAulas" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b" data-filter="true" data-filter-placeholder="Buscar aula...">
 						<li id="listdiv" data-role="list-divider">Aulas registradas</li>
 					</ul>
+					
+					<ul id="listviewPagamentos" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b" data-filter="true" data-filter-placeholder="Buscar pagamento...">
+						<li id="listdiv" data-role="list-divider">Pagamentos registrados</li>
+					</ul>
+					
+				</div>
+
+			<div data-role="footer">
+			</div><!-- /footer -->
+		</div><!-- /page -->
+		
+		<div data-role="page" id="pagamento">
+			 <div data-role="panel" data-position-fixed="true" id="nav-panel-pagamento">
+				<ul data-role="listview" data-theme="a" class="nav-search">
+					<li data-icon="delete"><a href="#" data-rel="close">Close menu</a></li>
+					<li><a href="#page">Alunos</a></li>
+					<li><a href="#aula">Registrar aula</a></li>
+					<li><a href="#">Registrar pagamento</a></li>
+					<li><a href="#" onClick="zeraBase();">Zerar base</a></li>
+				</ul>
+			</div><!-- /panel -->
+
+			<div data-role="header" data-position="fixed">
+				<h1>Registrar pagamento</h1>
+				<a href="#nav-panel-pagamento" data-icon="bars" data-iconpos="notext">Menu</a>
+				<a href="#" data-rel="close" data-role="button" data-theme="b" data-mini="false" onClick="registraPagamento()">Salvar</a>
+			</div><!-- /header -->
+
+				<div data-role="content">	
+					<form class="userform">
+						<label for="alunoPagamento">Aluno:</label>
+						<select name="alunoPagamento" id="alunoPagamento" data-mini="false">
+						</select>
+						
+						<label for="dataPagamento">Data:</label>
+						<input type="date" name="dataPagamento" id="dataPagamento" value="" data-clear-btn="true" autocomplete="off" data-mini="false">
+						
+						<label for="valorPagamento">Valor:</label>
+						<input type="number" name="valorPagamento" id="valorPagamento" value="" data-clear-btn="true" autocomplete="off" data-mini="false">
+					</form>
 				</div>
 
 			<div data-role="footer">
