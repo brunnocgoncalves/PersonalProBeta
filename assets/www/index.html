@@ -58,46 +58,6 @@
 				</ul>
 			</div><!-- /panel -->
 			
-			 <div data-role="panel" data-position-fixed="true" id="nav-aula" data-position="right">
-
-				<h1>Registrar aula</h1>
-
-			<div data-role="content">
-				<form class="userform">
-				
-					<label for="data">Data:</label>
-					<input type="date" name="data" id="data" value="" data-clear-btn="true" autocomplete="off" data-mini="false">
-				</form>
-				
-				<div class="ui-grid-a">
-					<div class="ui-block-a"><a href="#" data-rel="close" data-role="button" data-iconpos="notext" data-icon="delete" data-theme="c" data-mini="false">Cancelar</a></div>
-					<div class="ui-block-b"><a href="#" data-rel="close" data-role="button" data-theme="b" data-mini="false" data-iconpos="notext" data-icon="check" id="btnSalvar" onClick="registraAula()">Salvar</a></div>
-				</div>
-				
-			</div><!-- /content -->
-			</div><!-- /panel -->
-			<div data-role="panel" data-position-fixed="true" id="nav-pagamento">
-
-				<h1>Registrar pagamento</h1>
-
-				<div data-role="content">	
-					<form class="userform">
-						
-						<label for="dataPagamento">Data:</label>
-						<input type="date" name="dataPagamento" id="dataPagamento" value="" data-clear-btn="true" autocomplete="off" data-mini="false">
-						
-						<label for="valorPagamento">Valor:</label>
-						<input type="number" name="valorPagamento" id="valorPagamento" value="" data-clear-btn="true" autocomplete="off" data-mini="false">
-					</form>
-					
-					<div class="ui-grid-a">
-						<div class="ui-block-a"><a href="#" data-rel="close" data-role="button" data-theme="c" data-mini="false" data-iconpos="notext" data-icon="delete">Cancelar</a></div>
-						<div class="ui-block-b"><a href="#" data-rel="close" data-role="button" data-iconpos="notext" data-icon="check" data-theme="b" data-mini="false" id="btnSalvar" onClick="registraPagamento()">Salvar</a></div>
-					</div>
-					
-				</div>
-			</div><!-- /panel -->
-
 			<div data-role="header" data-position="fixed">
 				<h1 id="nomeAluno">Aluno</h1>
 				<a href="#nav-panel-alunos" data-icon="bars" data-iconpos="notext">Alunos</a>
@@ -115,6 +75,49 @@
 					<ul id="listviewPagamentos" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b" data-filter="true" data-filter-placeholder="Buscar pagamento...">
 						<li id="listdiv" data-role="list-divider">Pagamentos registrados</li>
 					</ul>
+					
+					<div data-role="collapsible">
+						
+						<h1>Registrar pagamento</h1>
+
+						<div data-role="content">	
+							<form class="userform">
+								
+								<label for="dataPagamento">Data:</label>
+								<input type="date" name="dataPagamento" id="dataPagamento" value="" data-clear-btn="true" autocomplete="off" data-mini="false">
+								
+								<label for="valorPagamento">Valor:</label>
+								<input type="number" name="valorPagamento" id="valorPagamento" value="" data-clear-btn="true" autocomplete="off" data-mini="false">
+							</form>
+							
+							<div class="ui-grid-a">
+								<div class="ui-block-a"><a href="#" data-rel="close" data-role="button" data-theme="c" data-mini="false" data-icon="delete">Cancelar</a></div>
+								<div class="ui-block-b"><a href="#" data-rel="close" data-role="button" data-icon="check" data-theme="b" data-mini="false" id="btnSalvar" onClick="registraPagamento()">Salvar</a></div>
+							</div>
+							
+						</div>
+						
+					</div>
+					
+					<div data-role="collapsible">
+					
+						<h1>Registrar aula</h1>
+
+						<div data-role="content">
+							<form class="userform">
+							
+								<label for="data">Data:</label>
+								<input type="date" name="data" id="data" value="" data-clear-btn="true" autocomplete="off" data-mini="false">
+							</form>
+							
+							<div class="ui-grid-a">
+								<div class="ui-block-a"><a href="#" data-rel="close" data-role="button" data-icon="delete" data-theme="c" data-mini="false">Cancelar</a></div>
+								<div class="ui-block-b"><a href="#" data-rel="close" data-role="button" data-theme="b" data-mini="false" data-icon="check" id="btnSalvar" onClick="registraAula()">Salvar</a></div>
+							</div>
+							
+						</div><!-- /content -->
+					
+					</div>
 					
 				</div>
 
