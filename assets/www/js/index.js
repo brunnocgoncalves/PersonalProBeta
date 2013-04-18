@@ -32,7 +32,7 @@
     }
 	
 	function carregaAluno(tx){
-		tx.executeSql('SELECT S1.nome, S.data FROM S_AULA S INNER JOIN S_ALUNO S1 ON S1.id = S.idAluno Where S.idAluno = ' + idAluno, [], successLoadAluno, errorLoadAluno);
+		tx.executeSql('SELECT S1.nome, S.data, S1.email, S1.valor, S1.dataFicha, S1.datanascimento, S1.tipo, S1.pagamento, S1.aulaficha FROM S_AULA S INNER JOIN S_ALUNO S1 ON S1.id = S.idAluno Where S.idAluno = ' + idAluno, [], successLoadAluno, errorLoadAluno);
 	}
 	
 	function carregaPagamentoAluno(tx){
@@ -56,6 +56,9 @@
 		var list = document.getElementById('listviewPagamentos');
 		$(list).listview("refresh");
 		
+		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
+		db.transaction(listaAlunos2, error);
+		
     }
 	
 	function successLoadAluno(tx, results) {
@@ -69,6 +72,13 @@
 			listItem.innerHTML = '<p>Data: ' + results.rows.item(i).data + '</p>';
 	 
 			parent.appendChild(listItem);
+			
+			document.getElementById('dadosAluno').innerHTML = '<p><strong>Ficha iniciada em ' + results.rows.item(i).dataFicha + ' e ira vencer apos ' + results.rows.item(i).aulaficha + ' aulas.</strong></p>'
+							+ '<p>Pagamento a cada ' + results.rows.item(i).pagamento + ' ' + results.rows.item(i).tipo + '.</p>'
+							+ '<p>Nasceu em ' + results.rows.item(i).datanascimento + '</p>'
+							+ '<p>E-mail: ' + results.rows.item(i).email + '</p>'
+							+ '<p><strong>Valor aula: R$' + results.rows.item(i).valor + '</strong></p>'
+						+ '</a>';
 		}
 		
 		var list = document.getElementById('listviewAulas');
@@ -89,6 +99,10 @@
 	
 	function listaAlunos(tx){
 		tx.executeSql('SELECT * FROM S_ALUNO', [], successLA, errorLA);
+	}
+	
+	function listaAlunos2(tx){
+		tx.executeSql('SELECT * FROM S_ALUNO', [], successLAAlunos, errorLA);
 	}
 	
 	function successLAA(tx, results) {
@@ -137,11 +151,11 @@
 			
 			listItem.innerHTML = '<a href="#" onclick="openAluno(' +results.rows.item(i).id+ ', \''+ results.rows.item(i).nome +'\');">'
 							+ '<h2>' + results.rows.item(i).nome + '</h2>'
-							+ '<p><strong>Ficha iniciada em ' + results.rows.item(i).dataFicha + ' e irá vencer após ' + results.rows.item(i).aulaficha + ' aulas.</strong></p>'
-							+ '<p>Pagamento a cada ' + results.rows.item(i).pagamento + ' ' + results.rows.item(i).tipo + '.</p>'
-							+ '<p>Nasceu em ' + results.rows.item(i).datanascimento + '</p>'
-							+ '<p>E-mail: ' + results.rows.item(i).email + '</p>'
-							+ '<p class="ui-li-aside"><strong>R$' + results.rows.item(i).valor + '</strong></p>'
+							//+ '<p><strong>Ficha iniciada em ' + results.rows.item(i).dataFicha + ' e irá vencer após ' + results.rows.item(i).aulaficha + ' aulas.</strong></p>'
+							//+ '<p>Pagamento a cada ' + results.rows.item(i).pagamento + ' ' + results.rows.item(i).tipo + '.</p>'
+							//+ '<p>Nasceu em ' + results.rows.item(i).datanascimento + '</p>'
+							//+ '<p>E-mail: ' + results.rows.item(i).email + '</p>'
+							//+ '<p class="ui-li-aside"><strong>R$' + results.rows.item(i).valor + '</strong></p>'
 						+ '</a>';
 	 
 			parent.appendChild(listItem);
@@ -149,6 +163,33 @@
 		}
 		
 		var list = document.getElementById('listview');
+		$(list).listview("refresh");
+		
+		novoId = novoId + 1;
+    }
+	
+	function successLAAlunos(tx, results) {
+		console.log(results.rows.length);
+		var len = results.rows.length;
+		var parent = document.getElementById('listviewAlunos');
+		for (var i=0; i<len; i++){
+			var listItem = document.createElement('li');
+			listItem.setAttribute('id','listitem');
+			
+			listItem.innerHTML = '<a href="#" onclick="openAluno(' +results.rows.item(i).id+ ', \''+ results.rows.item(i).nome +'\');">'
+							+ '<h2>' + results.rows.item(i).nome + '</h2>'
+							//+ '<p><strong>Ficha iniciada em ' + results.rows.item(i).dataFicha + ' e irá vencer após ' + results.rows.item(i).aulaficha + ' aulas.</strong></p>'
+							//+ '<p>Pagamento a cada ' + results.rows.item(i).pagamento + ' ' + results.rows.item(i).tipo + '.</p>'
+							//+ '<p>Nasceu em ' + results.rows.item(i).datanascimento + '</p>'
+							//+ '<p>E-mail: ' + results.rows.item(i).email + '</p>'
+							//+ '<p class="ui-li-aside"><strong>R$' + results.rows.item(i).valor + '</strong></p>'
+						+ '</a>';
+	 
+			parent.appendChild(listItem);
+			novoId = results.rows.item(i).id;
+		}
+		
+		var list = document.getElementById('listviewAlunos');
 		$(list).listview("refresh");
 		
 		novoId = novoId + 1;
@@ -234,6 +275,10 @@
 	function openAluno(id, nome){
 		idAluno = id;
 		$('#nomeAluno').text(nome);
+		$.mobile.loadPage("#pagealuno");
+		console.log('Aluno ' + idAluno);
+		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
+		db.transaction(carregaAluno, error);
 		$.mobile.changePage("#pagealuno");
 	}
 	
@@ -247,11 +292,11 @@
 		db.transaction(listaAlunosAula, error);
 	} );
 	
-	$( "#pagealuno" ).on( "pagecreate", function( event, ui ) {
+	/*$( "#pagealuno" ).on( "pagecreate", function( event, ui ) {
 		console.log('Aluno ' + idAluno);
 		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 		db.transaction(carregaAluno, error);
-	} );
+	} );*/
 	
 	function createAula(tx) {
 		varAluno = $('#aluno').val();
@@ -275,7 +320,7 @@
 	}
 	
 	function createPagamento(tx) {
-		varAluno = $('#alunoPagamento').val();
+		varAluno = idAluno;
 		varData = document.getElementById("dataPagamento").value;
 		varPagamento = document.getElementById("valorPagamento").value;
         tx.executeSql('INSERT INTO S_PAGAMENTO (idAluno, data, valor, created, created_by) VALUES ("' + varAluno + '", "' + varData + '", "' + varPagamento + '", datetime("now"), "ADMIN")');
@@ -295,9 +340,3 @@
 		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 		db.transaction(createPagamento, errorCP, successCP);
 	}
-	
-	$( "#pagamento" ).on( "pageshow", function( event, ui ) {
-		console.log('Pagamento');
-		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
-		db.transaction(listaAlunosPagamento, error);
-	} );
