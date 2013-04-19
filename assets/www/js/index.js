@@ -1,12 +1,8 @@
 	var idAluno;
 	var novoId;
 
-	// Wait for Cordova to load
-    //
 	document.addEventListener("deviceready", onDeviceReady, false);
 
-    // Cordova is ready
-    //
     function onDeviceReady() {
 		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
         db.transaction(createDataBase, errorCD, successCD);
@@ -27,6 +23,8 @@
 	
 	function deleteSucess(){
 		$.mobile.loadPage("#page");
+		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
+		db.transaction(listaAlunos, error);
 		$.mobile.changePage("#page");
 	}
 	
@@ -150,20 +148,13 @@
 		console.log(results.rows.length);
 		var len = results.rows.length;
 		var parent = document.getElementById('listview');
+		parent.innerHTML = "";
 		for (var i=0; i<len; i++){
-			var listItem = document.createElement('li');
-			listItem.setAttribute('id','listitem');
 			
-			listItem.innerHTML = '<a href="#" onclick="openAluno(' +results.rows.item(i).id+ ', \''+ results.rows.item(i).nome +'\');">'
+			parent.innerHTML = parent.innerHTML + '<li><a href="#" onclick="openAluno(' +results.rows.item(i).id+ ', \''+ results.rows.item(i).nome +'\');">'
 							+ '<h2>' + results.rows.item(i).nome + '</h2>'
-							//+ '<p><strong>Ficha iniciada em ' + results.rows.item(i).dataFicha + ' e irá vencer após ' + results.rows.item(i).aulaficha + ' aulas.</strong></p>'
-							//+ '<p>Pagamento a cada ' + results.rows.item(i).pagamento + ' ' + results.rows.item(i).tipo + '.</p>'
-							//+ '<p>Nasceu em ' + results.rows.item(i).datanascimento + '</p>'
-							//+ '<p>E-mail: ' + results.rows.item(i).email + '</p>'
-							//+ '<p class="ui-li-aside"><strong>R$' + results.rows.item(i).valor + '</strong></p>'
-						+ '</a>';
+							+ '</a></li>';
 	 
-			parent.appendChild(listItem);
 			novoId = results.rows.item(i).id;
 		}
 		
@@ -177,21 +168,13 @@
 		console.log(results.rows.length);
 		var len = results.rows.length;
 		var parent = document.getElementById('listviewAlunos');
-		parent.innerHTML = "";
+		parent.innerHTML = '<li><a href="#page">Novo aluno</a></li>';
 		for (var i=0; i<len; i++){
-			//var listItem = document.createElement('li');
-			//listItem.setAttribute('id','listitem');
 			
 			parent.innerHTML = parent.innerHTML + '<li><a href="#" onclick="openAluno(' +results.rows.item(i).id+ ', \''+ results.rows.item(i).nome +'\');">'
 							+ '<h2>' + results.rows.item(i).nome + '</h2>'
-							//+ '<p><strong>Ficha iniciada em ' + results.rows.item(i).dataFicha + ' e irá vencer após ' + results.rows.item(i).aulaficha + ' aulas.</strong></p>'
-							//+ '<p>Pagamento a cada ' + results.rows.item(i).pagamento + ' ' + results.rows.item(i).tipo + '.</p>'
-							//+ '<p>Nasceu em ' + results.rows.item(i).datanascimento + '</p>'
-							//+ '<p>E-mail: ' + results.rows.item(i).email + '</p>'
-							//+ '<p class="ui-li-aside"><strong>R$' + results.rows.item(i).valor + '</strong></p>'
-						+ '</a></li>';
+							+ '</a></li>';
 	 
-			//parent.appendChild(listItem);
 			novoId = results.rows.item(i).id;
 			
 		}
@@ -222,8 +205,6 @@
         console.log("Error processing SQL: "+err.message);
     }
 
-    // Transaction success callback
-    //
     function successCD() {
         console.log('Base de dados criada com sucesso!');
     }
@@ -232,27 +213,11 @@
         console.log("Error processing SQL: "+err.message);
     }
 
-    // Transaction success callback
-    //
     function successCA() {
         alert('Aluno criado com sucesso!');
-		var parent = document.getElementById('listview');
-		//var listItem = document.createElement('li');
-		//listItem.setAttribute('id','listitem');
 		
-		parent.innerHTML = parent.innerHTML + '<li><a href="#" onclick="openAluno('+novoId+', \'' + document.getElementById("name").value + '\');">'
-						+ '<h2>' + document.getElementById("name").value + '</h2>'
-						+ '<p><strong>Ficha iniciada em ' + document.getElementById("dataficha").value + ' e irá vencer após ' + document.getElementById("aulaficha").value + ' aulas.</strong></p>'
-						+ '<p>Pagamento a cada ' + document.getElementById("pagamento").value + ' ' + $('#tipo').val() + '.</p>'
-						+ '<p>Nasceu em ' + document.getElementById("datanascimento").value + '</p>'
-						+ '<p>E-mail: ' + document.getElementById("email").value + '</p>'
-						+ '<p class="ui-li-aside"><strong>R$' + document.getElementById("valor").value + '</strong></p>'
-					+ '</a></li>';
- 
-		//parent.appendChild(listItem);
-		
-		var list = document.getElementById('listview');
-		$(list).listview("refresh");
+		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
+		db.transaction(listaAlunos, error);
     }
 	
 	function save(){
@@ -273,10 +238,7 @@
     }
 
 	$( "#page" ).on( "pagecreate", function( event, ui ) {
-		//var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
-        //db.transaction(createDataBase, errorCD, successCD);
 		onDeviceReady();
-		//db.transaction(listaAlunos, error);
 	} );
 	
 	function openAluno(id, nome){
@@ -297,31 +259,19 @@
         db.transaction(zeraBaseDados, errorZB, successZB);
 	}
 	
-	/*$( "#aula" ).on( "pagecreate", function( event, ui ) {
-		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
-		db.transaction(listaAlunosAula, error);
-	} );*/
-	
-	/*$( "#pagealuno" ).on( "pagecreate", function( event, ui ) {
-		console.log('Aluno ' + idAluno);
-		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
-		db.transaction(carregaAluno, error);
-	} );*/
-	
 	function createAula(tx) {
-		varAluno = $('#aluno').val();
 		varData = document.getElementById("data").value;
-        tx.executeSql('INSERT INTO S_AULA (idAluno, data, created, created_by) VALUES ("' + varAluno + '", "' + varData + '", datetime("now"), "ADMIN")');
+        tx.executeSql('INSERT INTO S_AULA (idAluno, data, created, created_by) VALUES ("' + idAluno + '", "' + varData + '", datetime("now"), "ADMIN")');
     }
 	
 	function errorCAA(err) {
         console.log("Error processing SQL: "+err.message);
     }
 
-    // Transaction success callback
-    //
     function successCAA() {
         alert('Aula registrada com sucesso!');
+		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
+		db.transaction(carregaAula, error);
     }
 	
 	function registraAula(){
@@ -340,10 +290,10 @@
         console.log("Error processing SQL: "+err.message);
     }
 
-    // Transaction success callback
-    //
     function successCP() {
         alert('Pagamento registrado com sucesso!');
+		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
+		db.transaction(carregaPagamentoAluno, error);
     }
 	
 	function registraPagamento(){
