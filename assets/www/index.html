@@ -42,9 +42,8 @@
 						<option value="semana(s)">Semana</option>
 						<option value="aula(s)">Aula</option>
 					</select>
-					<div class="ui-grid-a">
-						<div class="ui-block-a"><a href="#" data-rel="close" data-role="button" data-theme="c" data-mini="false">Cancelar</a></div>
-						<div class="ui-block-b"><a href="#" data-rel="close" data-role="button" data-theme="b" data-mini="false" id="btnSalvar" onClick="save()">Salvar</a></div>
+					<div class="ui-grid-solo">
+						<div class="ui-block-a"><a href="#" data-rel="close" data-role="button" data-theme="b" data-mini="false" id="btnSalvar" onClick="save()">Salvar</a></div>
 					</div>
 				</form>
 				</div>
@@ -58,12 +57,19 @@
 				</ul>
 			</div><!-- /panel -->
 			
-			<div data-role="header" data-position="fixed">
+			<div data-role="header" data-position="fixed" data-theme="d">
 				<h1 id="nomeAluno">Aluno</h1>
 				<a href="#nav-panel-alunos" data-icon="bars" data-iconpos="notext">Alunos</a>
+				<a href="#" data-icon="delete" data-theme="b" data-iconpos="notext" onClick="excluir();">Excluir</a>
 			</div><!-- /header -->
 			
-				<div data-role="content">	
+				<div data-role="content">
+					<div data-role="popup" id="deleteAluno" data-theme="d" data-overlay-theme="b" class="ui-content" style="max-width:85%; padding-bottom:2em; width:85%">
+						<h3>Excluir aluno?</h3>
+						<p>O aluno será excluído e todo histórico será perdido.</p>
+						<a href="#" data-role="button" data-rel="back" data-theme="b" data-icon="check" data-inline="true" data-mini="true" onClick="removeAluno();">Confirmar</a>
+						<a href="#" data-role="button" data-rel="back" data-inline="true" data-mini="true">Cancelar</a>
+					</div>
 					<div id="dadosAluno">
 					
 					</div>
@@ -90,9 +96,8 @@
 								<input type="number" name="valorPagamento" id="valorPagamento" value="" data-clear-btn="true" autocomplete="off" data-mini="false">
 							</form>
 							
-							<div class="ui-grid-a">
-								<div class="ui-block-a"><a href="#" data-rel="close" data-role="button" data-theme="c" data-mini="false" data-icon="delete">Cancelar</a></div>
-								<div class="ui-block-b"><a href="#" data-rel="close" data-role="button" data-icon="check" data-theme="b" data-mini="false" id="btnSalvar" onClick="registraPagamento()">Salvar</a></div>
+							<div class="ui-grid-solo">
+								<div class="ui-block-a"><a href="#" data-rel="close" data-role="button" data-icon="check" data-theme="b" data-mini="false" id="btnSalvar" onClick="registraPagamento()">Salvar</a></div>
 							</div>
 							
 						</div>
@@ -110,9 +115,8 @@
 								<input type="date" name="data" id="data" value="" data-clear-btn="true" autocomplete="off" data-mini="false">
 							</form>
 							
-							<div class="ui-grid-a">
-								<div class="ui-block-a"><a href="#" data-rel="close" data-role="button" data-icon="delete" data-theme="c" data-mini="false">Cancelar</a></div>
-								<div class="ui-block-b"><a href="#" data-rel="close" data-role="button" data-theme="b" data-mini="false" data-icon="check" id="btnSalvar" onClick="registraAula()">Salvar</a></div>
+							<div class="ui-grid-solo">
+								<div class="ui-block-a"><a href="#" data-rel="close" data-role="button" data-theme="b" data-mini="false" data-icon="check" id="btnSalvar" onClick="registraAula()">Salvar</a></div>
 							</div>
 							
 						</div><!-- /content -->

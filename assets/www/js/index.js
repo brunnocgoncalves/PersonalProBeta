@@ -21,6 +21,15 @@
 		tx.executeSql('SELECT * FROM S_ALUNO', [], successLAP, errorLAP);
 	}
 	
+	function deleteAluno(tx){
+		tx.executeSql('DELETE FROM S_ALUNO WHERE id = ' + idAluno);
+	}
+	
+	function deleteSucess(){
+		$.mobile.loadPage("#page");
+		$.mobile.changePage("#page");
+	}
+	
 	function createDataBase(tx) {
         tx.executeSql('CREATE TABLE IF NOT EXISTS S_ALUNO (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, email TEXT, valor TEXT, dataFicha DATETIME, datanascimento DATETIME, pagamento TEXT, tipo TEXT, aulaficha TEXT, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS S_AULA (id INTEGER PRIMARY KEY AUTOINCREMENT, idAluno INTEGER, data DATETIME, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
@@ -32,61 +41,57 @@
     }
 	
 	function carregaAluno(tx){
-		tx.executeSql('SELECT S1.nome, S.data, S1.email, S1.valor, S1.dataFicha, S1.datanascimento, S1.tipo, S1.pagamento, S1.aulaficha FROM S_AULA S INNER JOIN S_ALUNO S1 ON S1.id = S.idAluno Where S.idAluno = ' + idAluno, [], successLoadAluno, errorLoadAluno);
+		tx.executeSql('SELECT * FROM S_ALUNO Where id = ' + idAluno, [], successLoadAluno, errorLoadAluno);
+	}
+	
+	function carregaAula(tx){
+		tx.executeSql('SELECT data FROM S_AULA Where idAluno = ' + idAluno, [], successLoadAula, errorLoadAluno);
 	}
 	
 	function carregaPagamentoAluno(tx){
 		tx.executeSql('SELECT * FROM S_PAGAMENTO S Where S.idAluno = ' + idAluno, [], successLoadPagamento, errorLoadPagamento);
 	}
 	
-	function successLoadPagamento(tx, results) {
-		console.log('Pagamentos: ' + results.rows.length);
-		var len = results.rows.length;
-		var parent = document.getElementById('listviewPagamentos');
-		for (var i=0; i<len; i++){
-			var listItem = document.createElement('li');
-			listItem.setAttribute('id','listitem');
-			
-			listItem.innerHTML = '<p>Data: ' + results.rows.item(i).data + '</p>'
-							+ '<p class="ui-li-aside"><strong>R$' + results.rows.item(i).valor + '</strong></p>';
-	 
-			parent.appendChild(listItem);
-		}
-		
-		var list = document.getElementById('listviewPagamentos');
-		$(list).listview("refresh");
-		
-		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
-		db.transaction(listaAlunos2, error);
-		
-    }
-	
 	function successLoadAluno(tx, results) {
-		console.log('Aulas');
+		console.log("Load Aluno");
 		var len = results.rows.length;
-		var parent = document.getElementById('listviewAulas');
 		for (var i=0; i<len; i++){
-			var listItem = document.createElement('li');
-			listItem.setAttribute('id','listitem');
-			
-			listItem.innerHTML = '<p>Data: ' + results.rows.item(i).data + '</p>';
-	 
-			parent.appendChild(listItem);
-			
 			document.getElementById('dadosAluno').innerHTML = '<p><strong>Ficha iniciada em ' + results.rows.item(i).dataFicha + ' e ira vencer apos ' + results.rows.item(i).aulaficha + ' aulas.</strong></p>'
 							+ '<p>Pagamento a cada ' + results.rows.item(i).pagamento + ' ' + results.rows.item(i).tipo + '.</p>'
 							+ '<p>Nasceu em ' + results.rows.item(i).datanascimento + '</p>'
 							+ '<p>E-mail: ' + results.rows.item(i).email + '</p>'
-							+ '<p><strong>Valor aula: R$' + results.rows.item(i).valor + '</strong></p>'
-						+ '</a>';
+							+ '<p><strong>Valor aula: R$' + results.rows.item(i).valor + '</strong></p>';
+		}
+				
+    }
+	
+	function successLoadPagamento(tx, results) {
+		console.log('Pagamentos: ' + results.rows.length);
+		var len = results.rows.length;
+		var parent = document.getElementById('listviewPagamentos');
+		parent.innerHTML = "";
+		for (var i=0; i<len; i++){
+			parent.innerHTML = parent.innerHTML + '<li><p>Data: ' + results.rows.item(i).data + '</p>'
+							+ '<p class="ui-li-aside"><strong>R$' + results.rows.item(i).valor + '</strong></p></li>';
+		}
+		
+		var list = document.getElementById('listviewPagamentos');
+		$(list).listview("refresh");
+			
+    }
+	
+	function successLoadAula(tx, results) {
+		console.log('Aulas');
+		var len = results.rows.length;
+		var parent = document.getElementById('listviewAulas');
+		parent.innerHTML = "";
+		for (var i=0; i<len; i++){
+			parent.innerHTML = parent.innerHTML + '<li><p>Data: ' + results.rows.item(i).data + '</p></li>';
 		}
 		
 		var list = document.getElementById('listviewAulas');
 		$(list).listview("refresh");
-		
-		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
-		db.transaction(carregaPagamentoAluno, error);
-		
+				
     }
 	
 	function errorLoadAluno(err) {
@@ -172,21 +177,23 @@
 		console.log(results.rows.length);
 		var len = results.rows.length;
 		var parent = document.getElementById('listviewAlunos');
+		parent.innerHTML = "";
 		for (var i=0; i<len; i++){
-			var listItem = document.createElement('li');
-			listItem.setAttribute('id','listitem');
+			//var listItem = document.createElement('li');
+			//listItem.setAttribute('id','listitem');
 			
-			listItem.innerHTML = '<a href="#" onclick="openAluno(' +results.rows.item(i).id+ ', \''+ results.rows.item(i).nome +'\');">'
+			parent.innerHTML = parent.innerHTML + '<li><a href="#" onclick="openAluno(' +results.rows.item(i).id+ ', \''+ results.rows.item(i).nome +'\');">'
 							+ '<h2>' + results.rows.item(i).nome + '</h2>'
 							//+ '<p><strong>Ficha iniciada em ' + results.rows.item(i).dataFicha + ' e irá vencer após ' + results.rows.item(i).aulaficha + ' aulas.</strong></p>'
 							//+ '<p>Pagamento a cada ' + results.rows.item(i).pagamento + ' ' + results.rows.item(i).tipo + '.</p>'
 							//+ '<p>Nasceu em ' + results.rows.item(i).datanascimento + '</p>'
 							//+ '<p>E-mail: ' + results.rows.item(i).email + '</p>'
 							//+ '<p class="ui-li-aside"><strong>R$' + results.rows.item(i).valor + '</strong></p>'
-						+ '</a>';
+						+ '</a></li>';
 	 
-			parent.appendChild(listItem);
+			//parent.appendChild(listItem);
 			novoId = results.rows.item(i).id;
+			
 		}
 		
 		var list = document.getElementById('listviewAlunos');
@@ -230,19 +237,19 @@
     function successCA() {
         alert('Aluno criado com sucesso!');
 		var parent = document.getElementById('listview');
-		var listItem = document.createElement('li');
-		listItem.setAttribute('id','listitem');
+		//var listItem = document.createElement('li');
+		//listItem.setAttribute('id','listitem');
 		
-		listItem.innerHTML = '<a href="#" onclick="openAluno('+novoId+', \'' + document.getElementById("name").value + '\');">'
+		parent.innerHTML = parent.innerHTML + '<li><a href="#" onclick="openAluno('+novoId+', \'' + document.getElementById("name").value + '\');">'
 						+ '<h2>' + document.getElementById("name").value + '</h2>'
 						+ '<p><strong>Ficha iniciada em ' + document.getElementById("dataficha").value + ' e irá vencer após ' + document.getElementById("aulaficha").value + ' aulas.</strong></p>'
 						+ '<p>Pagamento a cada ' + document.getElementById("pagamento").value + ' ' + $('#tipo').val() + '.</p>'
 						+ '<p>Nasceu em ' + document.getElementById("datanascimento").value + '</p>'
 						+ '<p>E-mail: ' + document.getElementById("email").value + '</p>'
 						+ '<p class="ui-li-aside"><strong>R$' + document.getElementById("valor").value + '</strong></p>'
-					+ '</a>';
+					+ '</a></li>';
  
-		parent.appendChild(listItem);
+		//parent.appendChild(listItem);
 		
 		var list = document.getElementById('listview');
 		$(list).listview("refresh");
@@ -279,6 +286,9 @@
 		console.log('Aluno ' + idAluno);
 		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 		db.transaction(carregaAluno, error);
+		db.transaction(carregaAula, error);
+		db.transaction(carregaPagamentoAluno, error);
+		db.transaction(listaAlunos2, error);
 		$.mobile.changePage("#pagealuno");
 	}
 	
@@ -287,10 +297,10 @@
         db.transaction(zeraBaseDados, errorZB, successZB);
 	}
 	
-	$( "#aula" ).on( "pagecreate", function( event, ui ) {
+	/*$( "#aula" ).on( "pagecreate", function( event, ui ) {
 		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 		db.transaction(listaAlunosAula, error);
-	} );
+	} );*/
 	
 	/*$( "#pagealuno" ).on( "pagecreate", function( event, ui ) {
 		console.log('Aluno ' + idAluno);
@@ -339,4 +349,13 @@
 	function registraPagamento(){
 		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 		db.transaction(createPagamento, errorCP, successCP);
+	}
+	
+	function excluir(){
+			$('#deleteAluno').popup("open");
+	}
+	
+	function removeAluno(){
+		var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
+		db.transaction(deleteAluno, errorCP, deleteSucess);
 	}
