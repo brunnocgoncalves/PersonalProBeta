@@ -30,12 +30,14 @@ function deleteSucess(){
 
 function createDataBase(tx) {
 	tx.executeSql('CREATE TABLE IF NOT EXISTS S_ALUNO (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, email TEXT, valor TEXT, dataFicha DATETIME, datanascimento DATETIME, pagamento TEXT, tipo TEXT, aulaficha TEXT, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS S_AULA (id INTEGER PRIMARY KEY AUTOINCREMENT, idAluno INTEGER, data DATETIME, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS S_PAGAMENTO (id INTEGER PRIMARY KEY AUTOINCREMENT, idAluno INTEGER, data DATETIME, valor TEXT, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS S_AULA (id INTEGER PRIMARY KEY AUTOINCREMENT, idAluno INTEGER, data DATETIME, paga TEXT, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS S_PAGAMENTO (id INTEGER PRIMARY KEY AUTOINCREMENT, idAluno INTEGER, data DATETIME, valor TEXT, adiantamento TEXT, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
 }
 
 function zeraBaseDados(tx) {
 	tx.executeSql('DROP TABLE S_ALUNO');
+	tx.executeSql('DROP TABLE S_AULA');
+	tx.executeSql('DROP TABLE S_PAGAMENTO');
 }
 
 function carregaAluno(tx){
@@ -44,6 +46,10 @@ function carregaAluno(tx){
 
 function carregaAula(tx){
 	tx.executeSql('SELECT data FROM S_AULA Where idAluno = ' + idAluno, [], successLoadAula, errorSQL);
+}
+
+function carregaAulaPagamento(tx){
+	tx.executeSql('SELECT data FROM S_AULA Where paga = "N" And idAluno = ' + idAluno, [], successLoadAulaPagamento, errorSQL);
 }
 
 function carregaPagamentoAluno(tx){
@@ -76,6 +82,18 @@ function successLoadPagamento(tx, results) {
 	var list = document.getElementById('listviewPagamentos');
 	$(list).listview("refresh");
 		
+}
+
+function successLoadAulaPagamento(tx, results) {
+	var len = results.rows.length;
+	var parent = document.getElementById('listviewAulas2');
+	parent.innerHTML = "";
+	for (var i=0; i<len; i++){
+		parent.innerHTML = parent.innerHTML + '<li><p>Data: ' + results.rows.item(i).data + '</p></li>';
+	}
+	
+	$(parent).listview("refresh");
+			
 }
 
 function successLoadAula(tx, results) {
@@ -157,6 +175,7 @@ function successLAAlunos(tx, results) {
 	var len = results.rows.length;
 	var parent = document.getElementById('listviewAlunos');
 	parent.innerHTML = '<li><a href="#page">Novo aluno</a></li>';
+	parent.innerHTML = parent.innerHTML + '<li><a href="#" onClick="zeraBase();">Zerar base</a></li>';
 	for (var i=0; i<len; i++){
 		
 		parent.innerHTML = parent.innerHTML + '<li><a href="#" onclick="openAluno(' +results.rows.item(i).id+ ', \''+ results.rows.item(i).nome +'\');">'
@@ -229,7 +248,7 @@ function zeraBase(){
 
 function createAula(tx) {
 	varData = document.getElementById("data").value;
-	tx.executeSql('INSERT INTO S_AULA (idAluno, data, created, created_by) VALUES ("' + idAluno + '", "' + varData + '", datetime("now"), "ADMIN")');
+	tx.executeSql('INSERT INTO S_AULA (idAluno, data, paga, created, created_by) VALUES ("' + idAluno + '", "' + varData + '", "N", datetime("now"), "ADMIN")');
 }
 
 function successCAA() {
@@ -268,4 +287,18 @@ function excluir(){
 function removeAluno(){
 	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 	db.transaction(deleteAluno, errorSQL, deleteSucess);
+}
+
+function showAulas(){
+	if($('#adiantamento').val() == 'N')
+	{
+		$( "#pagamentoAula" ).collapsible( "option", "collapsed", false );
+		alert('N');
+	}
+	else{
+		$( "#pagamentoAula" ).collapsible( "option", "collapsed", true );
+		alert('Y');
+	}
+	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
+	db.transaction(carregaAulaPagamento, errorSQL);
 }
