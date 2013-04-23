@@ -293,11 +293,9 @@ function showAulas(){
 	if($('#adiantamento').val() == 'N')
 	{
 		$( "#pagamentoAula" ).collapsible( "option", "collapsed", false );
-		alert('N');
 	}
 	else{
 		$( "#pagamentoAula" ).collapsible( "option", "collapsed", true );
-		alert('Y');
 	}
 	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 	db.transaction(carregaAulaPagamento, errorSQL);
