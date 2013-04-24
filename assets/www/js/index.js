@@ -292,10 +292,16 @@ function removeAluno(){
 function showAulas(){
 	if($('#adiantamento').val() == 'N')
 	{
-		$( "#pagamentoAula" ).collapsible( "option", "collapsed", false );
+		console.log("Fechar aulas");
+		var col = $('#pagamentoAula');
+
+	    col.data('collapsed',true);
 	}
 	else{
-		$( "#pagamentoAula" ).collapsible( "option", "collapsed", true );
+		console.log("Abrir aulas");
+		var col = $('#pagamentoAula');
+
+	    col.data('collapsed',false);
 	}
 	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 	db.transaction(carregaAulaPagamento, errorSQL);
