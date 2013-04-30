@@ -75,13 +75,19 @@
 					
 					</div>
 				
+                	<div data-role="collapsible" data-theme="b">
+                    	<h1>Aulas registradas</h1>
 					<ul id="listviewAulas" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b" data-filter="true" data-filter-placeholder="Buscar aula...">
 						<li id="listdiv" data-role="list-divider">Aulas registradas</li>
 					</ul>
+                    </div>
 					
+                    <div data-role="collapsible" data-theme="b">
+                    	<h1>Pagamentos registrados</h1>
 					<ul id="listviewPagamentos" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b" data-filter="true" data-filter-placeholder="Buscar pagamento...">
 						<li id="listdiv" data-role="list-divider">Pagamentos registrados</li>
 					</ul>
+                    </div>
 					
 					<div data-role="collapsible">
 						
@@ -96,30 +102,14 @@
 								<label for="valorPagamento">Valor:</label>
 								<input type="number" name="valorPagamento" id="valorPagamento" value="" data-clear-btn="true" autocomplete="off" data-mini="false">
 								
-								<label for="adiantamento">Adiantamento:</label>
-								<select name="adiantamento" onChange="showAulas();" id="adiantamento" data-role="slider">
-									<option value="N"> Não </option>
-									<option value="Y"> Sim </option>
-								</select>
 							</form>
-							
-							<div data-role="collapsible" id="pagamentoAula" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d">
-								<h3>Aulas registradas</h3>
-                                <p>
-								<ul id="listviewAulas2" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b" data-filter="false">
-									
-								</ul>
-                                </p>	
-							</div>
 
 							<div class="ui-grid-solo">
 								<div class="ui-block-a"><a href="#" data-rel="close" data-role="button" data-icon="check" data-theme="b" data-mini="false" id="btnSalvar" onClick="registraPagamento()">Salvar</a></div>
 							</div>
 
 						</div>
-						
-						
-						
+							
 					</div>
 					
 					<div data-role="collapsible">

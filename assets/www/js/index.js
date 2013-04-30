@@ -1,5 +1,8 @@
 var idAluno;
 var novoId;
+var aulas;
+var pagamentos;
+var credito;
 
 document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -30,8 +33,8 @@ function deleteSucess(){
 
 function createDataBase(tx) {
 	tx.executeSql('CREATE TABLE IF NOT EXISTS S_ALUNO (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, email TEXT, valor TEXT, dataFicha DATETIME, datanascimento DATETIME, pagamento TEXT, tipo TEXT, aulaficha TEXT, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS S_AULA (id INTEGER PRIMARY KEY AUTOINCREMENT, idAluno INTEGER, data DATETIME, paga TEXT, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS S_PAGAMENTO (id INTEGER PRIMARY KEY AUTOINCREMENT, idAluno INTEGER, data DATETIME, valor TEXT, adiantamento TEXT, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS S_AULA (id INTEGER PRIMARY KEY AUTOINCREMENT, idAluno INTEGER, data DATETIME, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS S_PAGAMENTO (id INTEGER PRIMARY KEY AUTOINCREMENT, idAluno INTEGER, data DATETIME, valor TEXT, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
 }
 
 function zeraBaseDados(tx) {
@@ -41,7 +44,63 @@ function zeraBaseDados(tx) {
 }
 
 function carregaAluno(tx){
-	tx.executeSql('SELECT * FROM S_ALUNO Where id = ' + idAluno, [], successLoadAluno, errorSQL);
+	tx.executeSql('SELECT '
+		+ 'S.dataFicha '
+		+ ',S.aulaficha '
+		+ ',S.pagamento '
+		+ ',S.tipo '
+		+ ',S.datanascimento '
+		+ ',S.nome '
+		+ ',S.email '
+		+ ',S.valor '
+		+ ',Count(S1.id) aulas '
+		+ 'FROM S_ALUNO S '
+		+ 'Left Join S_AULA S1 On( '
+		+ '	S1.idAluno = S.id '
+		+ ') '
+		+ 'Where '
+		+ 'S.id = ' + idAluno
+		+ ' Group By '
+		+ 'S.dataFicha '
+		+ ',S.aulaficha '
+		+ ',S.pagamento '
+		+ ',S.tipo '
+		+ ',S.datanascimento '
+		+ ',S.email '
+		+ ',S.valor '
+		, [], successLoadAluno, errorSQL);
+}
+
+function successLoadAluno(tx, results) {
+	console.log("Load Aluno");
+	var len = results.rows.length;
+	for (var i=0; i<len; i++){
+		document.getElementById('nomeAluno').innerHTML = results.rows.item(i).nome;
+		document.getElementById('dadosAluno').innerHTML = '<p>Ficha iniciada em ' + results.rows.item(i).dataFicha + ' e ira vencer apos ' + results.rows.item(i).aulaficha + ' aulas.</p>'
+						+ '<p>Pagamento a cada ' + results.rows.item(i).pagamento + ' ' + results.rows.item(i).tipo + '.</p>'
+						+ '<p>Nasceu em ' + results.rows.item(i).datanascimento + '</p>'
+						+ '<p>E-mail: ' + results.rows.item(i).email + '</p>'
+						+ '<p>Valor aula: <strong>R$' + results.rows.item(i).valor + '</strong></p>';
+		aulas = results.rows.item(i).aulas;
+		valorAula = results.rows.item(i).valor;
+	}
+	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
+	db.transaction(loadCredito, errorSQL);	
+			
+}
+
+function loadCredito(tx){
+	tx.executeSql('SELECT SUM(valor) pagamentos FROM S_PAGAMENTO Where idAluno = ' + idAluno, [], successLoadCredito, errorSQL);
+}
+
+function successLoadCredito(tx, results) {
+	console.log("Load crédito");
+	var len = results.rows.length;
+	for (var i=0; i<len; i++){
+		pagamentos = results.rows.item(i).pagamentos;
+	}
+	credito = pagamentos - aulas * valorAula;
+	document.getElementById('nomeAluno').innerHTML = document.getElementById('nomeAluno').innerHTML + ' / Saldo: R$' + credito;
 }
 
 function carregaAula(tx){
@@ -56,24 +115,11 @@ function carregaPagamentoAluno(tx){
 	tx.executeSql('SELECT * FROM S_PAGAMENTO S Where S.idAluno = ' + idAluno, [], successLoadPagamento, errorSQL);
 }
 
-function successLoadAluno(tx, results) {
-	console.log("Load Aluno");
-	var len = results.rows.length;
-	for (var i=0; i<len; i++){
-		document.getElementById('dadosAluno').innerHTML = '<p><strong>Ficha iniciada em ' + results.rows.item(i).dataFicha + ' e ira vencer apos ' + results.rows.item(i).aulaficha + ' aulas.</strong></p>'
-						+ '<p>Pagamento a cada ' + results.rows.item(i).pagamento + ' ' + results.rows.item(i).tipo + '.</p>'
-						+ '<p>Nasceu em ' + results.rows.item(i).datanascimento + '</p>'
-						+ '<p>E-mail: ' + results.rows.item(i).email + '</p>'
-						+ '<p><strong>Valor aula: R$' + results.rows.item(i).valor + '</strong></p>';
-	}
-			
-}
-
 function successLoadPagamento(tx, results) {
 	console.log('Pagamentos: ' + results.rows.length);
 	var len = results.rows.length;
 	var parent = document.getElementById('listviewPagamentos');
-	parent.innerHTML = "";
+	parent.innerHTML = '<li id="listdiv" data-role="list-divider">Pagamentos registrados</li>';
 	for (var i=0; i<len; i++){
 		parent.innerHTML = parent.innerHTML + '<li><p>Data: ' + results.rows.item(i).data + '</p>'
 						+ '<p class="ui-li-aside"><strong>R$' + results.rows.item(i).valor + '</strong></p></li>';
@@ -100,7 +146,7 @@ function successLoadAula(tx, results) {
 	console.log('Aulas');
 	var len = results.rows.length;
 	var parent = document.getElementById('listviewAulas');
-	parent.innerHTML = "";
+	parent.innerHTML = '<li id="listdiv" data-role="list-divider">Aulas registradas</li>';
 	for (var i=0; i<len; i++){
 		parent.innerHTML = parent.innerHTML + '<li><p>Data: ' + results.rows.item(i).data + '</p></li>';
 	}
@@ -248,13 +294,14 @@ function zeraBase(){
 
 function createAula(tx) {
 	varData = document.getElementById("data").value;
-	tx.executeSql('INSERT INTO S_AULA (idAluno, data, paga, created, created_by) VALUES ("' + idAluno + '", "' + varData + '", "N", datetime("now"), "ADMIN")');
+	tx.executeSql('INSERT INTO S_AULA (idAluno, data, created, created_by) VALUES ("' + idAluno + '", "' + varData + '", datetime("now"), "ADMIN")');
 }
 
 function successCAA() {
 	alert('Aula registrada com sucesso!');
 	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 	db.transaction(carregaAula, errorSQL);
+	db.transaction(carregaAluno, errorSQL);
 }
 
 function registraAula(){
@@ -273,6 +320,7 @@ function successCP() {
 	alert('Pagamento registrado com sucesso!');
 	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 	db.transaction(carregaPagamentoAluno, errorSQL);
+	db.transaction(carregaAluno, errorSQL);
 }
 
 function registraPagamento(){
@@ -287,22 +335,4 @@ function excluir(){
 function removeAluno(){
 	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 	db.transaction(deleteAluno, errorSQL, deleteSucess);
-}
-
-function showAulas(){
-	if($('#adiantamento').val() == 'N')
-	{
-		console.log("Fechar aulas");
-		var col = $('#pagamentoAula');
-
-	    col.data('collapsed',true);
-	}
-	else{
-		console.log("Abrir aulas");
-		var col = $('#pagamentoAula');
-
-	    col.data('collapsed',false);
-	}
-	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
-	db.transaction(carregaAulaPagamento, errorSQL);
 }
