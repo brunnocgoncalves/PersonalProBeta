@@ -35,6 +35,7 @@ function createDataBase(tx) {
 	tx.executeSql('CREATE TABLE IF NOT EXISTS S_ALUNO (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, email TEXT, valor TEXT, dataFicha DATETIME, datanascimento DATETIME, pagamento TEXT, tipo TEXT, aulaficha TEXT, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS S_AULA (id INTEGER PRIMARY KEY AUTOINCREMENT, idAluno INTEGER, data DATETIME, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS S_PAGAMENTO (id INTEGER PRIMARY KEY AUTOINCREMENT, idAluno INTEGER, data DATETIME, valor TEXT, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS S_FICHA (id INTEGER PRIMARY KEY AUTOINCREMENT, idAluno INTEGER, data DATETIME, desc TEXT, created DATETIME, created_by TEXT, updated DATETIME, updated_by TEXT)');
 }
 
 function zeraBaseDados(tx) {
@@ -113,6 +114,24 @@ function carregaAulaPagamento(tx){
 
 function carregaPagamentoAluno(tx){
 	tx.executeSql('SELECT * FROM S_PAGAMENTO S Where S.idAluno = ' + idAluno, [], successLoadPagamento, errorSQL);
+}
+
+function carregaFichaAluno(tx){
+	tx.executeSql('SELECT * FROM S_FICHA S Where S.idAluno = ' + idAluno, [], successLoadFicha, errorSQL);
+}
+
+function successLoadFicha(tx, results) {
+	console.log('Ficha: ' + results.rows.length);
+	var len = results.rows.length;
+	var parent = document.getElementById('listviewFichas');
+	parent.innerHTML = '<li id="listdiv" data-role="list-divider">Fichas registradas</li>';
+	for (var i=0; i<len; i++){
+		parent.innerHTML = parent.innerHTML + '<li><p>Data início: ' + results.rows.item(i).data + '</p>'
+						+ '<p>' + results.rows.item(i).desc + '</p></li>';
+	}
+	
+	$(parent).listview("refresh");
+		
 }
 
 function successLoadPagamento(tx, results) {
@@ -284,6 +303,7 @@ function openAluno(id, nome){
 	db.transaction(carregaAula, errorSQL);
 	db.transaction(carregaPagamentoAluno, errorSQL);
 	db.transaction(listaAlunos2, errorSQL);
+	db.transaction(carregaFichaAluno, errorSQL);
 	$.mobile.changePage("#pagealuno");
 }
 
@@ -316,11 +336,26 @@ function createPagamento(tx) {
 	tx.executeSql('INSERT INTO S_PAGAMENTO (idAluno, data, valor, created, created_by) VALUES ("' + varAluno + '", "' + varData + '", "' + varPagamento + '", datetime("now"), "ADMIN")');
 }
 
+function createFicha(tx){
+	varAluno = idAluno;
+	varData = document.getElementById("dataInicio").value;
+	varDesc = document.getElementById("textFicha").value;
+	tx.executeSql('INSERT INTO S_FICHA (idAluno, data, desc, created, created_by) VALUES ("' + varAluno + '", "' + varData + '", "' + varDesc + '", datetime("now"), "ADMIN")');
+}
+
 function successCP() {
 	alert('Pagamento registrado com sucesso!');
 	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 	db.transaction(carregaPagamentoAluno, errorSQL);
 	db.transaction(carregaAluno, errorSQL);
+}
+
+function successCF() {
+	alert('Ficha registrada com sucesso!');
+	document.getElementById("dataInicio").value = '';
+	document.getElementById("textFicha").value = '';
+	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
+	db.transaction(carregaFichaAluno, errorSQL);
 }
 
 function registraPagamento(){
@@ -335,4 +370,9 @@ function excluir(){
 function removeAluno(){
 	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 	db.transaction(deleteAluno, errorSQL, deleteSucess);
+}
+
+function registraFicha(){
+	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
+	db.transaction(createFicha, errorSQL, successCF);
 }

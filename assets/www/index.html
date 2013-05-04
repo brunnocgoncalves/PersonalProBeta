@@ -74,20 +74,50 @@
 					<div id="dadosAluno">
 					
 					</div>
+                    
+                    <div data-role="collapsible" data-theme="b" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
+                    	<h1>Fichas registradas</h1>
+					<ul id="listviewFichas" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b" data-filter="true" data-filter-placeholder="Buscar ficha...">
+						<li id="listdiv" data-role="list-divider">Fichas registradas</li>
+					</ul>
+                    </div>
 				
-                	<div data-role="collapsible" data-theme="b">
+                	<div data-role="collapsible" data-theme="b" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
                     	<h1>Aulas registradas</h1>
 					<ul id="listviewAulas" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b" data-filter="true" data-filter-placeholder="Buscar aula...">
 						<li id="listdiv" data-role="list-divider">Aulas registradas</li>
 					</ul>
                     </div>
 					
-                    <div data-role="collapsible" data-theme="b">
+                    <div data-role="collapsible" data-theme="b" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
                     	<h1>Pagamentos registrados</h1>
 					<ul id="listviewPagamentos" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b" data-filter="true" data-filter-placeholder="Buscar pagamento...">
 						<li id="listdiv" data-role="list-divider">Pagamentos registrados</li>
 					</ul>
                     </div>
+                    
+                    <div data-role="collapsible">
+						
+						<h1>Registrar ficha</h1>
+
+						<div data-role="content">	
+							<form class="userform">
+								
+								<label for="dataPagamento">Data início:</label>
+								<input type="date" name="dataInicio" id="dataInicio" value="" data-clear-btn="true" autocomplete="off" data-mini="false">
+								
+								<label for="valorPagamento">Ficha:</label>
+								<textarea cols="40" rows="15" name="textFicha" id="textFicha"></textarea>
+								
+							</form>
+
+							<div class="ui-grid-solo">
+								<div class="ui-block-a"><a href="#" data-rel="close" data-role="button" data-icon="check" data-theme="b" data-mini="false" id="btnSalvar" onClick="registraFicha()">Salvar</a></div>
+							</div>
+
+						</div>
+							
+					</div>
 					
 					<div data-role="collapsible">
 						
