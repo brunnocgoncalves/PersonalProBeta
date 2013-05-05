@@ -46,11 +46,11 @@ function zeraBaseDados(tx) {
 
 function carregaAluno(tx){
 	tx.executeSql('SELECT '
-		+ 'S.dataFicha '
+		+ 'strftime("%d/%m/%Y",S.dataFicha) dataFicha '
 		+ ',S.aulaficha '
 		+ ',S.pagamento '
 		+ ',S.tipo '
-		+ ',S.datanascimento '
+		+ ',strftime("%d/%m/%Y",S.datanascimento) datanascimento '
 		+ ',S.nome '
 		+ ',S.email '
 		+ ',S.valor '
@@ -105,15 +105,15 @@ function successLoadCredito(tx, results) {
 }
 
 function carregaAula(tx){
-	tx.executeSql('SELECT data FROM S_AULA Where idAluno = ' + idAluno, [], successLoadAula, errorSQL);
+	tx.executeSql('SELECT strftime("%d/%m/%Y",data) data FROM S_AULA Where idAluno = ' + idAluno, [], successLoadAula, errorSQL);
 }
 
 function carregaAulaPagamento(tx){
-	tx.executeSql('SELECT data FROM S_AULA Where paga = "N" And idAluno = ' + idAluno, [], successLoadAulaPagamento, errorSQL);
+	tx.executeSql('SELECT strftime("%d/%m/%Y",data) data FROM S_AULA Where paga = "N" And idAluno = ' + idAluno, [], successLoadAulaPagamento, errorSQL);
 }
 
 function carregaPagamentoAluno(tx){
-	tx.executeSql('SELECT * FROM S_PAGAMENTO S Where S.idAluno = ' + idAluno, [], successLoadPagamento, errorSQL);
+	tx.executeSql('SELECT strftime("%d/%m/%Y",data) data,* FROM S_PAGAMENTO S Where S.idAluno = ' + idAluno, [], successLoadPagamento, errorSQL);
 }
 
 function carregaFichaAluno(tx){
