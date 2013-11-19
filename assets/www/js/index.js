@@ -102,6 +102,7 @@ function successLoadCredito(tx, results) {
 	}
 	credito = pagamentos - aulas * valorAula;
 	document.getElementById('nomeAluno').innerHTML = document.getElementById('nomeAluno').innerHTML + ' / Saldo: R$' + credito;
+	document.getElementById('dadosAluno').innerHTML = document.getElementById('dadosAluno').innerHTML + ' / Saldo: R$' + credito;
 }
 
 function carregaAula(tx){
