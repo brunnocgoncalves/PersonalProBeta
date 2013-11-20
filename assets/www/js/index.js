@@ -1,4 +1,5 @@
 var idAluno;
+var idAula;
 var novoId;
 var aulas;
 var pagamentos;
@@ -102,11 +103,11 @@ function successLoadCredito(tx, results) {
 	}
 	credito = pagamentos - aulas * valorAula;
 	document.getElementById('nomeAluno').innerHTML = document.getElementById('nomeAluno').innerHTML + ' / Saldo: R$' + credito;
-	document.getElementById('dadosAluno').innerHTML = document.getElementById('dadosAluno').innerHTML + ' / Saldo: R$' + credito;
+	document.getElementById('dadosAluno').innerHTML = document.getElementById('dadosAluno').innerHTML + ' <b>Saldo: R$' + credito + '</b>';
 }
 
 function carregaAula(tx){
-	tx.executeSql('SELECT strftime("%d/%m/%Y",data) data FROM S_AULA Where idAluno = ' + idAluno, [], successLoadAula, errorSQL);
+	tx.executeSql('SELECT strftime("%d/%m/%Y",data) data, id FROM S_AULA Where idAluno = ' + idAluno, [], successLoadAula, errorSQL);
 }
 
 function carregaAulaPagamento(tx){
@@ -168,7 +169,7 @@ function successLoadAula(tx, results) {
 	var parent = document.getElementById('listviewAulas');
 	parent.innerHTML = '<li id="listdiv" data-role="list-divider">Aulas registradas</li>';
 	for (var i=0; i<len; i++){
-		parent.innerHTML = parent.innerHTML + '<li><p>Data: ' + results.rows.item(i).data + '</p></li>';
+		parent.innerHTML = parent.innerHTML + '<li><a href="#" onClick="excluirAula('+ results.rows.item(i).id +');"><p>Data: ' + results.rows.item(i).data + '</p></a></li>';
 	}
 	
 	var list = document.getElementById('listviewAulas');
@@ -309,6 +310,8 @@ function openAluno(id, nome){
 }
 
 function zeraBase(){
+	alert('Inativado');
+	return;
 	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 	db.transaction(zeraBaseDados, errorSQL, successZB);
 }
@@ -320,6 +323,7 @@ function createAula(tx) {
 
 function successCAA() {
 	alert('Aula registrada com sucesso!');
+	varData = document.getElementById("data").value = '';
 	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 	db.transaction(carregaAula, errorSQL);
 	db.transaction(carregaAluno, errorSQL);
@@ -376,4 +380,24 @@ function removeAluno(){
 function registraFicha(){
 	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 	db.transaction(createFicha, errorSQL, successCF);
+}
+
+function deleteAula(tx){
+	tx.executeSql('DELETE FROM S_AULA WHERE id = ' + idAula);	
+}
+
+function excluirAula(id){
+	idAula = id;
+	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
+	db.transaction(deleteAula, errorSQL, sucessEA);
+}
+
+function sucessEA () {
+	alert('Excluido com sucesso!!!');
+	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
+	db.transaction(carregaAluno, errorSQL);
+	db.transaction(carregaAula, errorSQL);
+	db.transaction(carregaPagamentoAluno, errorSQL);
+	db.transaction(listaAlunos2, errorSQL);
+	db.transaction(carregaFichaAluno, errorSQL);
 }
