@@ -387,9 +387,17 @@ function deleteAula(tx){
 }
 
 function excluirAula(id){
-	idAula = id;
+	var r=confirm("A aula sera excluida!");
+	if (r==true)
+	  {
+	  idAula = id;
 	var db = window.openDatabase("PersonalProBeta", "1.0", "Personal Pro", 200000);
 	db.transaction(deleteAula, errorSQL, sucessEA);
+	  }
+	else
+	  {
+	  return;
+	  }
 }
 
 function sucessEA () {
