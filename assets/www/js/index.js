@@ -78,7 +78,7 @@ function successLoadAluno(tx, results) {
 	var len = results.rows.length;
 	for (var i=0; i<len; i++){
 		document.getElementById('nomeAluno').innerHTML = results.rows.item(i).nome;
-		document.getElementById('dadosAluno').innerHTML = '<p>Ficha iniciada em ' + results.rows.item(i).dataFicha + ' e ira vencer apos ' + results.rows.item(i).aulaficha + ' aulas.</p>'
+		document.getElementById('dadosAluno').innerHTML = ''
 						+ '<p>Pagamento a cada ' + results.rows.item(i).pagamento + ' ' + results.rows.item(i).tipo + '.</p>'
 						+ '<p>Nasceu em ' + results.rows.item(i).datanascimento + '</p>'
 						+ '<p>E-mail: ' + results.rows.item(i).email + '</p>'
@@ -167,7 +167,7 @@ function successLoadAula(tx, results) {
 	console.log('Aulas');
 	var len = results.rows.length;
 	var parent = document.getElementById('listviewAulas');
-	parent.innerHTML = '<li id="listdiv" data-role="list-divider">Aulas registradas</li>';
+	parent.innerHTML = '<li id="listdiv" data-role="list-divider">Aulas registradas [' + len + ']</li>';
 	for (var i=0; i<len; i++){
 		parent.innerHTML = parent.innerHTML + '<li><a href="#" onClick="excluirAula('+ results.rows.item(i).id +');"><p>Data: ' + results.rows.item(i).data + '</p></a></li>';
 	}
@@ -283,12 +283,12 @@ function createAluno(tx) {
 	varNome = document.getElementById("name").value;
 	varEmail = document.getElementById("email").value;
 	varValor = document.getElementById("valor").value;
-	varDataFicha = document.getElementById("dataficha").value;
-	varaulaficha = document.getElementById("aulaficha").value;
+	//varDataFicha = document.getElementById("dataficha").value;
+	//varaulaficha = document.getElementById("aulaficha").value;
 	vardatanascimento = document.getElementById("datanascimento").value;
 	varpagamento = document.getElementById("formaPagamento").value;
 	vartipo = $('#tipo').val();
-	tx.executeSql('INSERT INTO S_ALUNO (nome, email, valor, dataficha, datanascimento, pagamento, tipo, aulaficha, created, created_by) VALUES ("' + varNome + '", "' + varEmail + '", "' + varValor + '", "' + varDataFicha + '", "' + vardatanascimento + '", "' + varpagamento + '", "' + vartipo + '", "' + varaulaficha + '", datetime("now"), "ADMIN")');
+	tx.executeSql('INSERT INTO S_ALUNO (nome, email, valor, datanascimento, pagamento, tipo, created, created_by) VALUES ("' + varNome + '", "' + varEmail + '", "' + varValor + '", "' + vardatanascimento + '", "' + varpagamento + '", "' + vartipo + '", datetime("now"), "ADMIN")');
 }
 
 $( "#page" ).on( "pagecreate", function( event, ui ) {
